@@ -1,0 +1,26 @@
+{
+    "name": "luanv/atividade2",
+    "description": "lista2",
+    "type": "projetc",
+    "require-dev": {
+        "psy/psysh": "@stable"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Luanv\\Atividade2\\": "src/"
+        }
+    },
+    "scripts": {
+        "start": "php -S localhost:8081 -t src",
+        "psy": "./vendor/psy/psysh/bin/psysh"
+    },
+    "authors": [
+        {
+            "name": "vLuanM",
+            "email": "luanmachado.pl225@academico.ifsul.edu.br"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}
