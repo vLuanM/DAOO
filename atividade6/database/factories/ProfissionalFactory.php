@@ -2,21 +2,26 @@
 
 namespace Database\Factories;
 
-use App\Models\Profissional;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 
+/**
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Profissional>
+ */
 class ProfissionalFactory extends Factory
 {
-    protected $model = Profissional::class;
-
-    public function definition()
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
     {
         return [
-            'mei' => $this->faker->unique()->numerify('##.###.###/####-##'), // Gerando MEI
-            'nome' => $this->faker->name,
-            'email' => $this->faker->unique()->safeEmail,
-            'senha' => bcrypt('senha123'), // Criptografando a senha
+            'mei' => $this->faker->numerify('##.###.###/####-##'),
+            'nome' => $this->faker->name(),
+            'email' => $this->faker->unique()->safeEmail(),
+            'senha' => Hash::make('password'),
         ];
     }
 }

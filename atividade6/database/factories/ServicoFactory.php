@@ -2,19 +2,23 @@
 
 namespace Database\Factories;
 
-use App\Models\Servico;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Servico>
+ */
 class ServicoFactory extends Factory
 {
-    protected $model = Servico::class;
-
-    public function definition()
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
     {
         return [
-            'descricao' => $this->faker->sentence,
-            'preco' => $this->faker->randomFloat(2, 50, 1000),
-            'profissional_id' => \App\Models\Profissional::factory(), // Relaciona com um Profissional
+            'descricao' => $this->faker->sentence(6),
+            'preco' => $this->faker->randomFloat(2, 50, 5000),
         ];
     }
 }

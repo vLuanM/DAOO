@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Profissao;
+use App\Models\Profissional;
 use Illuminate\Http\Request;
 
 class ProfissaoController extends Controller
@@ -10,64 +11,59 @@ class ProfissaoController extends Controller
     public function index()
     {
         // Retorna a view com todas as profissões
-        $profissoes = Profissao::all();
+        $profissoes = Profissao::with('profissional')->get();
         return view('profissao.index', compact('profissoes'));
     }
 
+    /**
+     * Mostra o formulário para criar uma nova profissão.
+     */
     public function create()
     {
-        // Retorna a view para criar uma nova profissão
-        return view('profissao.create');
+        // Retorna a view com o formulário para criar uma profissão
+        $profissionais = Profissional::all();
+        return view('profissao.create', compact('profissionais'));
     }
 
+    /**
+     * Armazena uma nova profissão no banco de dados.
+     */
     public function store(Request $request)
     {
-        // Valida e cria uma nova profissão
-        $request->validate([
-            'servico' => 'required|string|max:255',
-        ]);
-
-        Profissao::create($request->all());
-
-        return redirect()->route('profissoes.index')
-            ->with('success', 'Profissão criada com sucesso!');
+        // Validação dos dados
+        $dados = $request ->all();
+        if(Profissao::create($dados)){
+            return redirect('/profissoes');
+        } else dd('Erro ao criar profissão!');
     }
-
     public function show($id)
     {
-        // Retorna a view com os detalhes de uma profissão específica
-        $profissao = Profissao::findOrFail($id);
+        $profissao = Profissao::with('profissional')->findOrFail($id);
         return view('profissao.show', compact('profissao'));
     }
 
     public function edit($id)
     {
-        // Retorna a view para editar uma profissão específica
-        $profissao = Profissao::findOrFail($id);
-        return view('profissao.edit', compact('profissao'));
+        return view('profissao.edit', [
+            'profissao'=> Profissao::findOrFail($id)
+        ]);
     }
 
     public function update(Request $request, $id)
     {
-        // Valida e atualiza os dados da profissão
-        $request->validate([
-            'servico' => 'required|string|max:255',
-        ]);
+        $dados=$request->all();
 
         $profissao = Profissao::findOrFail($id);
-        $profissao->update($request->all());
+        $profissao->update($dados);
 
-        return redirect()->route('profissoes.index')
-            ->with('success', 'Profissão atualizada com sucesso!');
+        return redirect('/profissoes');
     }
 
     public function destroy($id)
     {
-        // Deleta uma profissão específica
         $profissao = Profissao::findOrFail($id);
         $profissao->delete();
 
-        return redirect()->route('profissoes.index')
-            ->with('success', 'Profissão excluída com sucesso!');
+        return redirect('/profissoes');
     }
 }

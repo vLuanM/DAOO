@@ -9,80 +9,55 @@ class ProfissionalController extends Controller
 {
     public function index()
     {
-        // Retorna a view com todos os profissionais
-        $profissionais = Profissional::all();
-        return view('profissional.index', compact('profissionais'));
+        return view('profissional.index', [
+            'profissionais' => Profissional::all()
+        ]);
     }
 
     public function create()
     {
-        // Retorna a view para criar um novo profissional
         return view('profissional.create');
     }
 
     public function store(Request $request)
     {
-        // Valida e cria um novo profissional
-        $request->validate([
-            'mei' => 'required|string|max:255|unique:profissionais',
-            'nome' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:profissionais',
-            'senha' => 'required|string|min:8',
-        ]);
-
-        Profissional::create($request->all());
-
-        return redirect()->route('profissionais.index')
-            ->with('success', 'Profissional criado com sucesso!');
+        $dados = $request->all();
+        if (Profissional::create($dados)) {
+            return redirect('/profissionais');
+        } else {
+            return back()->withErrors(['msg' => 'Erro ao criar profissional!']);
+        }
     }
 
     public function show($id)
     {
-        // Retorna a view com os detalhes de um profissional específico
-        $profissional = Profissional::findOrFail($id);
-        return view('profissional.show', compact('profissional'));
+        $profissional = Profissional::with(['profissoes', 'servicos'])->findOrFail($id);
+
+        return view('profissional.show', [
+            'profissional' => $profissional
+        ]);
     }
 
     public function edit($id)
     {
-        // Retorna a view para editar um profissional específico
-        $profissional = Profissional::findOrFail($id);
-        return view('profissional.edit', compact('profissional'));
+        return view('profissional.edit', [
+            'profissional' => Profissional::findOrFail($id)
+        ]);
     }
 
     public function update(Request $request, $id)
     {
-        // Valida e atualiza os dados do profissional
-        $request->validate([
-            'mei' => 'required|string|max:255|unique:profissionais,mei,'.$id,
-            'nome' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:profissionais,email,'.$id,
-            'senha' => 'nullable|string|min:8',
-        ]);
-
-        $profissional = Profissional::findOrFail($id);
         $dados = $request->all();
-
-        // Se a senha for enviada, criptografá-la antes de salvar
-        if($request->filled('senha')) {
-            $dados['senha'] = bcrypt($request->senha);
-        } else {
-            unset($dados['senha']);
-        }
-
+        $profissional = Profissional::findOrFail($id);
         $profissional->update($dados);
 
-        return redirect()->route('profissionais.index')
-            ->with('success', 'Profissional atualizado com sucesso!');
+        return redirect('/profissionais');
     }
 
     public function destroy($id)
     {
-        // Deleta um profissional específico
         $profissional = Profissional::findOrFail($id);
         $profissional->delete();
-
-        return redirect()->route('profissionais.index')
-            ->with('success', 'Profissional excluído com sucesso!');
+        return redirect('/profissionais');
     }
 }

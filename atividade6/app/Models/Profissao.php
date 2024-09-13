@@ -9,11 +9,20 @@ class Profissao extends Model
 {
     use HasFactory;
 
-    // Define a tabela associada a este modelo (opcional, caso o nome não siga a convenção de pluralização)
     protected $table = 'profissoes';
 
-    // Define os campos que podem ser preenchidos em massa
     protected $fillable = [
         'servico',
+        'profissional_id',
     ];
+
+    public function profissional()
+    {
+        return $this->belongsTo(Profissional::class);
+    }
+
+    public function servicos()
+    {
+        return $this->hasMany(Servico::class);
+    }
 }

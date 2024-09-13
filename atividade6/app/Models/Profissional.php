@@ -11,11 +11,20 @@ class Profissional extends Model
 
     protected $table = 'profissionais';
 
-    protected $fillable = ['mei', 'nome', 'email', 'senha'];
+    protected $fillable = [
+        'mei',
+        'nome',
+        'email',
+        'senha',
+    ];
 
-    // Relacionamento
+    public function profissoes()
+    {
+        return $this->hasMany(Profissao::class);
+    }
+
     public function servicos()
     {
-        return $this->hasMany(Servico::class);
+        return $this->hasManyThrough(Servico::class, Profissao::class);
     }
 }

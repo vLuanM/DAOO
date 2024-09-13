@@ -3,73 +3,68 @@
 namespace App\Http\Controllers;
 
 use App\Models\Servico;
+use App\Models\Profissao;
 use Illuminate\Http\Request;
 
 class ServicoController extends Controller
 {
+
     public function index()
     {
-        // Retorna a view com todos os serviços
-        $servicos = Servico::all();
-        return view('servico.index', compact('servicos'));
+        // Retornar a view com todos os serviços
+        return view('servico.index', [
+            'servicos' => Servico::all()
+        ]);
     }
 
     public function create()
     {
-        // Retorna a view para criar um novo serviço
-        return view('servico.create');
+        // Certifique-se de passar a lista de profissões para a view
+        $profissoes = Profissao::all();
+        return view('servico.create', compact('profissoes'));
     }
 
     public function store(Request $request)
     {
-        // Valida e cria um novo serviço
-        $request->validate([
-            'descricao' => 'required|string|max:255',
-            'preco' => 'required|numeric',
-        ]);
+        $dados = $request->all();
 
-        Servico::create($request->all());
-
-        return redirect()->route('servicos.index')
-            ->with('success', 'Serviço criado com sucesso!');
+        if(Servico::create($dados)){
+            return redirect('/servicos');
+        } else {
+            dd("Erro ao criar serviço!");
+        }
     }
 
     public function show($id)
     {
-        // Retorna a view com os detalhes de um serviço específico
-        $servico = Servico::findOrFail($id);
-        return view('servico.show', compact('servico'));
+        return view('servico.show', [
+            'servico' => Servico::findOrFail($id)
+        ]);
     }
 
     public function edit($id)
     {
-        // Retorna a view para editar um serviço específico
-        $servico = Servico::findOrFail($id);
-        return view('servico.edit', compact('servico'));
+        return view ('servico.edit', [
+            'servico' => Servico::findOrFail($id)
+        ]);
     }
 
     public function update(Request $request, $id)
     {
-        // Valida e atualiza os dados do serviço
-        $request->validate([
-            'descricao' => 'required|string|max:255',
-            'preco' => 'required|numeric',
-        ]);
+        $dados = $request->all();
 
         $servico = Servico::findOrFail($id);
-        $servico->update($request->all());
+        $servico->update($dados);
 
-        return redirect()->route('servicos.index')
-            ->with('success', 'Serviço atualizado com sucesso!');
+        return redirect('/servicos');
     }
 
     public function destroy($id)
     {
-        // Deleta um serviço específico
         $servico = Servico::findOrFail($id);
+
         $servico->delete();
 
-        return redirect()->route('servicos.index')
-            ->with('success', 'Serviço excluído com sucesso!');
+        return redirect('/servicos');
     }
 }

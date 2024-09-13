@@ -9,10 +9,16 @@ class Servico extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['descricao', 'preco', 'profissional_id'];
+    protected $table = 'servicos';
 
-    public function profissional()
+    protected $fillable = [
+        'descricao',
+        'preco',
+        'profissao_id',
+    ];
+
+    public function profissao()
     {
-        return $this->belongsTo(Profissional::class);
+        return $this->belongsTo(Profissao::class);
     }
 }

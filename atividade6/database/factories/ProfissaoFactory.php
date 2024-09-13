@@ -2,17 +2,22 @@
 
 namespace Database\Factories;
 
-use App\Models\Profissao;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Profissao>
+ */
 class ProfissaoFactory extends Factory
 {
-    protected $model = Profissao::class;
-
-    public function definition()
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
     {
         return [
-            'servico' => $this->faker->jobTitle, // Nome da profissão
+            'servico' => $this->faker->jobTitle(),
         ];
     }
 }
